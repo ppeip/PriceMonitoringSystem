@@ -49,11 +49,11 @@ type User struct {
 }
 type ExchangsInfo struct {
 	ExchangesId   int64  `json:"exchanges_id" gorm:"primaryKey;"` /*交易所id:"1"*/
-	ExchangesName string `json:"exchanges_name"`                  /*交易名字id:"上海证券交易所"*/
+	ExchangesName string `json:"exchanges_name"`                  /*交易名字:"上海证券交易所"*/
 }
 type RegulatoryInfo struct {
-	AuthorityId   int64  `json:"authority_id" gorm:"primaryKey;"` /*交易所id:"1"*/
-	AuthorityName string `json:"authority_name"`                  /*交易名字id:"上海证券交易所"*/
+	AuthorityId   int64  `json:"authority_id" gorm:"primaryKey;"` /*监管所id:"1"*/
+	AuthorityName string `json:"authority_name"`                  /*监管所名字:"FINRA"*/
 }
 
 func (metalPrice *MetalPrice) AfterCreate(db *gorm.DB) (err error) {
