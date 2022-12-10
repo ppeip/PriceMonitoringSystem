@@ -39,9 +39,9 @@ type ExchangRecords struct {
 	ExchangesId int64 `json:"exchanges_id" `                 /*交易所id:"1"*/
 }
 type Account struct {
-	AccountId   int64  `json:"account_id" gorm:"primaryKey;"` /*账户id:"1"*/
-	UserId      string `json:"user_id" `                      /*用户id:"1"*/
-	ExchangesId int64  `json:"exchanges_id" `                 /*交易所id:"1"*/
+	AccountId   int64 `json:"account_id" gorm:"primaryKey;"` /*账户id:"1"*/
+	UserId      int64 `json:"user_id" `                      /*用户id:"1"*/
+	ExchangesId int64 `json:"exchanges_id" `                 /*交易所id:"1"*/
 }
 type User struct {
 	UserId int64  `json:"user_id" gorm:"primaryKey;"` /*用户所id:"1"*/
@@ -57,17 +57,17 @@ type RegulatoryInfo struct {
 }
 
 func (metalPrice *MetalPrice) AfterCreate(db *gorm.DB) (err error) {
-	var metalType MetalType
+	var metalexchangerecords MetalExchangeRecords
 	fmt.Println(metalPrice.Vol)
-	db.Model(&metalType).Where("variety = ? ", metalPrice.Variety).Update("totalvol", gorm.Expr("totalvol + ?", metalType.Totalvol))
+	db.Model(&metalexchangerecords).Where("variety = ? AND time = ? ", metalPrice.Variety, metalPrice.Time).Update("totalvol", gorm.Expr("totalvol + ?", metalexchangerecords.Totalvol))
 	fmt.Println("修改成功")
 	return nil
 }
 
 func (metalPrice *MetalPrice) BeforeDelete(db *gorm.DB) (err error) {
-	var metalType MetalType
+	var metalexchangerecords MetalExchangeRecords
 	fmt.Println(metalPrice.Vol)
-	db.Model(&metalType).Where("variety = ?", metalPrice.Variety).Update("totalvol", gorm.Expr("totalvol - ?", metalType.Totalvol))
+	db.Model(&metalexchangerecords).Where("variety = ? AND time = ? ", metalPrice.Variety, metalPrice.Time).Update("totalvol", gorm.Expr("totalvol - ?", metalexchangerecords.Totalvol))
 	fmt.Println("修改成功")
 	return nil
 }
