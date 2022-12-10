@@ -123,6 +123,18 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 		db.Create(&exchangrecords)
 		context.Status(http.StatusCreated)
 	})
+	//添加新账户
+	router.POST("api/account", func(context *gin.Context) {
+		var acconut repository.Account
+		err := context.BindJSON(&acconut)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid signin json", "json": acconut})
+			context.Abort()
+			return
+		}
+		db.Create(&acconut)
+		context.Status(http.StatusCreated)
+	})
 	//添加新用户
 	router.POST("api/user", func(context *gin.Context) {
 		var user repository.User
@@ -194,6 +206,16 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 		err = db.Where("records_id = ? ", id).Delete(&exchangrecords).Error
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			context.String(http.StatusNotFound, "pricerecord not found")
+			return
+		}
+	})
+	//根据id删除某个账户
+	router.DELETE("api/account/:account_id", func(context *gin.Context) {
+		id := context.Param("account_id")
+		var user repository.User
+		err := db.Where("account_id = ? ", id).Delete(&user).Error
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			context.String(http.StatusNotFound, "account not found")
 			return
 		}
 	})
